@@ -1,0 +1,15 @@
+{
+	"port": {
+		"insert": ":8080",
+        "delete": ":8081",
+        "update": ":8082"
+	},
+	"database": {
+		"host": "localhost",
+        "port": 5432,
+        "user": "postgres",
+        "password": "1234",
+        "dbname": "db_internal_api",
+        "sslmode": "disable"
+	}
+}
