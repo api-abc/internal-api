@@ -1,6 +1,7 @@
 package insert
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -14,6 +15,8 @@ import (
 type DataUsecaseInsert struct {
 	service insert.IServiceInsert
 }
+
+var ctx context.Context = context.Background()
 
 func NewDataUsecaseInsert(service insert.IServiceInsert) IDataUsecaseInsert {
 	return &DataUsecaseInsert{
@@ -33,11 +36,11 @@ func (ins *DataUsecaseInsert) HandleInsert(writer http.ResponseWriter, req *http
 		helper.WriteOutput(writer, 400, response.BodyResponse{Status: response.StatusBadRequest, Message: "Invalid Request", Data: nil})
 		return
 	}
-	resp := ins.service.Create(request) //run service by request
+	resp := ins.service.Create(ctx, request) //run service by request
 	helper.WriteOutput(writer, 201, resp)
 }
 
 func (ins *DataUsecaseInsert) HandleGetInserted(writer http.ResponseWriter, req *http.Request) {
-	resp := ins.service.GetInsert()
-	helper.WriteOutput(writer, response.StatusOK, resp)
+	resp := ins.service.GetInsert(ctx)
+	helper.WriteOutputGet(writer, 200, resp)
 }

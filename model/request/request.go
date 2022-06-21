@@ -12,7 +12,3 @@ type UpdateRequest struct {
 	Age        int        `json:"age"`
 	JobDetails domain.Job `json:"job_details"`
 }
-
-type DeleteRequest struct {
-	Name string `json:"name"`
-}

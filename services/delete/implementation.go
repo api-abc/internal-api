@@ -21,8 +21,7 @@ func NewDeleteService(adj adj.IData, repo delete.IDataDelete) IServiceDelete {
 	}
 }
 
-func (sd *ServiceDelete) Delete(name string) response.BodyResponse {
-	var ctx context.Context
+func (sd *ServiceDelete) Delete(ctx context.Context, name string) response.BodyResponse {
 	model := domain.Data{
 		Name:   name,
 		Status: false,
@@ -42,7 +41,11 @@ func (sd *ServiceDelete) Delete(name string) response.BodyResponse {
 	}
 }
 
-func (sq *ServiceDelete) GetDelete() response.BodyResponse {
-	res := response.BodyResponse{}
-	return res
+func (sd *ServiceDelete) GetDelete(ctx context.Context) response.BodyResponseGet {
+	count := sd.repo.GetDeleted(ctx)
+	return response.BodyResponseGet{
+		Status:  response.StatusOK,
+		Message: "Success fetch data",
+		Data:    &count,
+	}
 }

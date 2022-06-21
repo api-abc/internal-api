@@ -3,6 +3,7 @@ package update
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 
 	"github.com/api-abc/internal-api/helper"
 	"github.com/api-abc/internal-api/model/domain"
@@ -18,25 +19,29 @@ func NewDataUpdateRepo(db *sql.DB) IDataUpdate {
 	}
 }
 
-func (repo *DataUpdateRepo) Update(ctx context.Context, tx *sql.Tx, data domain.Data) error {
-	query := "UPDATE data SET name=$1, age=$2, job_details=$3, worker_update=$4 WHERE name=$5 AND status = true"
-	_, err := tx.ExecContext(ctx, query, data.Name, data.Age, data.JobDetails, data.WorkerUpdate, data.Name)
+func (repo *DataUpdateRepo) Update(ctx context.Context, data domain.Data) error {
+	query := "UPDATE data SET age=$1, job_details=$2, worker_update=$3 WHERE name=$4 AND status = true"
+	marsh, err := json.Marshal(&data.JobDetails)
+	helper.HandlePanic(err)
+	_, err = repo.database.ExecContext(ctx, query, data.Age, marsh, data.WorkerUpdate, data.Name)
 	helper.HandlePanic(err)
 	return nil
 }
 
-func (repo *DataUpdateRepo) GetUpdated(ctx context.Context, tx *sql.Tx) int {
+func (repo *DataUpdateRepo) GetUpdated(ctx context.Context) int {
+	var dats []*domain.Data
 	query := "SELECT name, age, status, job_details, worker_update FROM data WHERE status = true" //belum tau kalau updated check darimana
-	rows, err := tx.QueryContext(ctx, query)
+	rows, err := repo.database.QueryContext(ctx, query)
 	helper.HandlePanic(err)
 	defer rows.Close()
 
-	var dats []domain.Data
 	for rows.Next() {
 		var data domain.Data
-		err := rows.Scan(&data.Name, &data.Age, &data.Status, &data.JobDetails, &data.WorkerUpdate)
+		var jobDetails []byte
+		err := rows.Scan(&data.Name, &data.Age, &data.Status, &jobDetails, &data.WorkerUpdate)
 		helper.HandlePanic(err)
-		dats = append(dats, data)
+		json.Unmarshal(jobDetails, &data.JobDetails)
+		dats = append(dats, &data)
 	}
 	return len(dats)
 }

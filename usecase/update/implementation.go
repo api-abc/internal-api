@@ -1,6 +1,7 @@
 package update
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -15,6 +16,8 @@ import (
 type DataUsecaseUpdate struct {
 	service update.IServiceUpdate
 }
+
+var ctx context.Context = context.Background()
 
 func NewDataUsecaseUpdate(service update.IServiceUpdate) IDataUsecaseUpdate {
 	return &DataUsecaseUpdate{
@@ -35,10 +38,11 @@ func (upd *DataUsecaseUpdate) HandleUpdate(writer http.ResponseWriter, req *http
 		helper.WriteOutput(writer, 400, response.BodyResponse{Status: response.StatusBadRequest, Message: "Invalid Request", Data: nil})
 		return
 	}
-	resp := upd.service.Update(request, name)
-	helper.WriteOutput(writer, 201, resp)
+	resp := upd.service.Update(ctx, request, name)
+	helper.WriteOutput(writer, 200, resp)
 }
 
-func (upde *DataUsecaseUpdate) HandleGetUpdated(writer http.ResponseWriter, req *http.Request) {
-
+func (upd *DataUsecaseUpdate) HandleGetUpdated(writer http.ResponseWriter, req *http.Request) {
+	resp := upd.service.GetUpdate(ctx)
+	helper.WriteOutputGet(writer, 200, resp)
 }

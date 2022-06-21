@@ -3,6 +3,7 @@ package delete
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 
 	"github.com/api-abc/internal-api/helper"
 	"github.com/api-abc/internal-api/model/domain"
@@ -26,17 +27,19 @@ func (repo *DataDeleteRepo) Delete(ctx context.Context, data domain.Data) error 
 }
 
 func (repo *DataDeleteRepo) GetDeleted(ctx context.Context) int {
+	var dats []*domain.Data
 	query := "SELECT name, age, status, job_details, worker_update FROM data WHERE status = false"
 	rows, err := repo.database.QueryContext(ctx, query)
 	helper.HandlePanic(err)
 	defer rows.Close()
 
-	var dats []domain.Data
 	for rows.Next() {
 		var data domain.Data
-		err := rows.Scan(&data.Name, &data.Age, &data.Status, &data.JobDetails, &data.WorkerUpdate)
+		var jobDetails []byte
+		err := rows.Scan(&data.Name, &data.Age, &data.Status, &jobDetails, &data.WorkerUpdate)
 		helper.HandlePanic(err)
-		dats = append(dats, data)
+		json.Unmarshal(jobDetails, &data.JobDetails)
+		dats = append(dats, &data)
 	}
 	return len(dats)
 }

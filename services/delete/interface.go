@@ -1,10 +1,12 @@
 package delete
 
 import (
+	"context"
+
 	"github.com/api-abc/internal-api/model/response"
 )
 
 type IServiceDelete interface {
-	Delete(name string) response.BodyResponse
-	GetDelete() response.BodyResponse
+	Delete(context.Context, string) response.BodyResponse
+	GetDelete(context.Context) response.BodyResponseGet
 }

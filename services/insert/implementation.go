@@ -2,7 +2,6 @@ package insert
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/api-abc/internal-api/model/domain"
@@ -24,10 +23,8 @@ func NewInsertService(adj adj.IData, repo insert.IDataInsert) IServiceInsert {
 	}
 }
 
-func (si *ServiceInsert) Create(request request.InsertRequest) response.BodyResponse {
-	var ctx context.Context
+func (si *ServiceInsert) Create(ctx context.Context, request request.InsertRequest) response.BodyResponse {
 	//check one if exist
-	fmt.Println("Insert - Check Exist")
 	exist := si.adj.GetDataByName(ctx, request.Name)
 	if len(exist) != 0 {
 		return response.BodyResponse{
@@ -36,7 +33,6 @@ func (si *ServiceInsert) Create(request request.InsertRequest) response.BodyResp
 			Data:    nil,
 		}
 	}
-	fmt.Println("Insert - Check Exist Done")
 
 	model := domain.Data{
 		Name:         request.Name,
@@ -45,7 +41,6 @@ func (si *ServiceInsert) Create(request request.InsertRequest) response.BodyResp
 		Status:       true,
 		WorkerUpdate: time.Now(),
 	}
-	fmt.Println("Insert - Process to Repo")
 	err := si.repo.Insert(ctx, model)
 	if err != nil {
 		return response.BodyResponse{
@@ -55,7 +50,6 @@ func (si *ServiceInsert) Create(request request.InsertRequest) response.BodyResp
 		}
 
 	}
-	fmt.Println("Insert - Process to Repo Done")
 	return response.BodyResponse{
 		Status:  response.StatusOK,
 		Message: "Success",
@@ -63,7 +57,11 @@ func (si *ServiceInsert) Create(request request.InsertRequest) response.BodyResp
 	}
 }
 
-func (si *ServiceInsert) GetInsert() response.BodyResponse {
-	res := response.BodyResponse{}
-	return res
+func (si *ServiceInsert) GetInsert(ctx context.Context) response.BodyResponseGet {
+	count := si.repo.GetInserted(ctx)
+	return response.BodyResponseGet{
+		Status:  response.StatusOK,
+		Message: "Success fetch data",
+		Data:    &count,
+	}
 }

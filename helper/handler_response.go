@@ -16,6 +16,14 @@ func WriteOutput(writer http.ResponseWriter, code int, resp response.BodyRespons
 	writer.Write([]byte(output))
 }
 
+// menuliskan output json di usecase handler
+func WriteOutputGet(writer http.ResponseWriter, code int, resp response.BodyResponseGet) {
+	writer.Header().Set("Content-Type", "application/json")
+	writer.WriteHeader(code)
+	output, _ := json.Marshal(resp)
+	writer.Write([]byte(output))
+}
+
 // membuat response untuk kasus berhasil (status 200, 201, dll)
 func WriteStatusSuccess(result *domain.Data, status int, msg string) response.BodyResponse {
 	resp := response.BodyResponse{

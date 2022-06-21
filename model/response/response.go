@@ -8,6 +8,12 @@ type BodyResponse struct {
 	Data    *domain.Data `json:"data,omitempty"`
 }
 
+type BodyResponseGet struct {
+	Status  int    `json:"status"`
+	Message string `json:"message"`
+	Data    *int   `json:"data,omitempty"`
+}
+
 const (
 	StatusOK                  = 1
 	StatusCreated             = 2

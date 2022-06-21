@@ -23,31 +23,27 @@ func NewDataInsertRepo(db *sql.DB) IDataInsert {
 func (repo *DataInsertRepo) Insert(ctx context.Context, data domain.Data) error {
 	query := "INSERT INTO data(name, age, status, job_details, worker_update) VALUES($1,$2,$3,$4,$5)"
 	marsh, err := json.Marshal(&data.JobDetails)
-	if err != nil {
-		fmt.Println("MARSHAL:", err)
-		return err
-	}
-	_, err = repo.database.Exec(query, data.Name, data.Age, data.Status, marsh, data.WorkerUpdate)
-	if err != nil {
-		fmt.Println("DB Query:", err)
-		return err
-	}
-	// helper.HandlePanic(err)
+	helper.HandlePanic(err)
+	_, err = repo.database.ExecContext(ctx, query, data.Name, data.Age, data.Status, marsh, data.WorkerUpdate)
+	helper.HandlePanic(err)
 	return nil
 }
 
-func (repo *DataInsertRepo) GetInserted(ctx context.Context, tx *sql.Tx) int {
+func (repo *DataInsertRepo) GetInserted(ctx context.Context) int {
+	var dats []*domain.Data
 	query := "SELECT name, age, status, job_details, worker_update FROM data WHERE status = true"
-	rows, err := tx.QueryContext(ctx, query)
+	fmt.Println("Insert - Query Process")
+	rows, err := repo.database.QueryContext(ctx, query)
 	helper.HandlePanic(err)
 	defer rows.Close()
 
-	var dats []domain.Data
 	for rows.Next() {
 		var data domain.Data
-		err := rows.Scan(&data.Name, &data.Age, &data.Status, &data.JobDetails, &data.WorkerUpdate)
+		var jobDetails []byte
+		err := rows.Scan(&data.Name, &data.Age, &data.Status, &jobDetails, &data.WorkerUpdate)
 		helper.HandlePanic(err)
-		dats = append(dats, data)
+		json.Unmarshal(jobDetails, &data.JobDetails)
+		dats = append(dats, &data)
 	}
 	return len(dats)
 }
