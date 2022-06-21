@@ -39,7 +39,7 @@ func (su *ServiceUpdate) Update(ctx context.Context, request request.UpdateReque
 		JobDetails:   request.JobDetails,
 		WorkerUpdate: time.Now(),
 	}
-	err := su.repo.Update(ctx, model)
+	model, err := su.repo.Update(ctx, model)
 	if err != nil {
 		return response.BodyResponse{
 			Status:  response.StatusInternalServerError,
@@ -50,7 +50,7 @@ func (su *ServiceUpdate) Update(ctx context.Context, request request.UpdateReque
 	return response.BodyResponse{
 		Status:  response.StatusOK,
 		Message: "Update Success",
-		Data:    nil,
+		Data:    &model,
 	}
 }
 

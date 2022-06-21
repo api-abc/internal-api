@@ -7,6 +7,6 @@ import (
 )
 
 type IDataUpdate interface {
-	Update(ctx context.Context, data domain.Data) error
+	Update(ctx context.Context, data domain.Data) (domain.Data, error)
 	GetUpdated(ctx context.Context) int
 }
