@@ -17,7 +17,7 @@ func WriteOutput(writer http.ResponseWriter, code int, resp response.BodyRespons
 }
 
 // membuat response untuk kasus berhasil (status 200, 201, dll)
-func WriteStatusSuccess(result domain.Data, status int, msg string) response.BodyResponse {
+func WriteStatusSuccess(result *domain.Data, status int, msg string) response.BodyResponse {
 	resp := response.BodyResponse{
 		Status:  status,
 		Message: msg,
@@ -31,6 +31,7 @@ func WriteStatusError(err error, status int) response.BodyResponse {
 	resp := response.BodyResponse{
 		Status:  status,
 		Message: err.Error(),
+		Data:    nil,
 	}
 	return resp
 }
