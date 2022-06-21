@@ -3,8 +3,8 @@ package adj
 import (
 	"context"
 	"database/sql"
+	"fmt"
 
-	"github.com/api-abc/internal-api/helper"
 	"github.com/api-abc/internal-api/model/domain"
 )
 
@@ -18,18 +18,29 @@ func NewDataRepoAdj(db *sql.DB) IData {
 	}
 }
 
-func (repo *DataRepoAdj) GetDataByName(ctx context.Context, name string) []domain.Data {
+func (repo *DataRepoAdj) GetDataByName(ctx context.Context, name string) []*domain.Data {
+	var dats []*domain.Data
 	query := "SELECT name, age, status, job_details, worker_update FROM data WHERE name = $1 AND status = true"
-	rows, err := repo.database.QueryContext(ctx, query, name)
-	helper.HandlePanic(err)
+	fmt.Println("ADJ - Process Query")
+	rows, err := repo.database.Query(query, name)
+	if err != nil {
+		fmt.Println("ADJ REPO:", err)
+		return dats
+	}
+	fmt.Println("ADJ - Process Query Done")
+	// helper.HandlePanic(err)
 	defer rows.Close()
 
-	var dats []domain.Data
+	fmt.Println("ADJ - Process Rows")
 	for rows.Next() {
 		var data domain.Data
 		err := rows.Scan(&data.Name, &data.Age, &data.Status, &data.JobDetails, &data.WorkerUpdate)
-		helper.HandlePanic(err)
-		dats = append(dats, data)
+		if err != nil {
+			fmt.Println("ADJ SCAN:", err)
+			return dats
+		}
+		// helper.HandlePanic(err)
+		dats = append(dats, &data)
 	}
 	return dats
 }

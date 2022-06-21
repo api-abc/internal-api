@@ -7,5 +7,5 @@ import (
 )
 
 type IData interface {
-	GetDataByName(ctx context.Context, name string) []domain.Data
+	GetDataByName(ctx context.Context, name string) []*domain.Data
 }
