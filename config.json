@@ -6,9 +6,9 @@
 	},
 	"database": {
 		"host": "localhost",
-        "port": 1234,
+        "port": 5432,
         "user": "postgres",
-        "password": "root",
+        "password": "1234",
         "dbname": "db_internal_api",
         "sslmode": "disable"
 	}
