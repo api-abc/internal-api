@@ -8,7 +8,7 @@
 		"host": "localhost",
         "port": 5432,
         "user": "postgres",
-        "password": "1234",
+        "password": "root",
         "dbname": "db_internal_api",
         "sslmode": "disable"
 	}

@@ -32,7 +32,7 @@ func (si *ServiceInsert) Create(ctx context.Context, request request.InsertReque
 			Status:  response.StatusBadRequest,
 			Message: "Already Exist",
 			Data:    nil,
-		}, errors.New("Already Exist")
+		}, errors.New("already exist")
 	}
 
 	model := domain.Data{
@@ -49,7 +49,7 @@ func (si *ServiceInsert) Create(ctx context.Context, request request.InsertReque
 			Status:  response.StatusBadRequest,
 			Message: err.Error(),
 			Data:    nil,
-		}, errors.New("Already Exist")
+		}, errors.New("already exist")
 
 	}
 	return response.BodyResponse{

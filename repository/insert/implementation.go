@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
-	"fmt"
 
 	"github.com/api-abc/internal-api/helper"
 	"github.com/api-abc/internal-api/model/domain"
@@ -32,7 +31,6 @@ func (repo *DataInsertRepo) Insert(ctx context.Context, data domain.Data) error 
 func (repo *DataInsertRepo) GetInserted(ctx context.Context) []*domain.Data {
 	var dats []*domain.Data
 	query := "SELECT name, age, status, job_details, worker_update FROM data WHERE status = true"
-	fmt.Println("Insert - Query Process")
 	rows, err := repo.database.QueryContext(ctx, query)
 	helper.HandlePanic(err)
 	defer rows.Close()

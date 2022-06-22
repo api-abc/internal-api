@@ -22,7 +22,7 @@ func NewDataRepoAdj(db *sql.DB) IData {
 
 func (repo *DataRepoAdj) GetDataByName(ctx context.Context, name string) []*domain.Data {
 	var dats []*domain.Data
-	query := "SELECT name, age, status, job_details, worker_update FROM data WHERE name = $1 AND status = true"
+	query := "SELECT name, age, status, job_details, worker_update FROM data WHERE name = $1"
 	rows, err := repo.database.Query(query, name)
 	if err != nil {
 		fmt.Println("ADJ REPO:", err)

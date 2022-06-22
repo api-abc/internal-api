@@ -32,7 +32,7 @@ func (su *ServiceUpdate) Update(ctx context.Context, request request.UpdateReque
 			Status:  response.StatusNotFound,
 			Message: "Data not found",
 			Data:    nil,
-		}, errors.New("Data not found")
+		}, errors.New("data not found")
 	}
 
 	model := domain.Data{
@@ -40,6 +40,7 @@ func (su *ServiceUpdate) Update(ctx context.Context, request request.UpdateReque
 		Age:          request.Age,
 		JobDetails:   request.JobDetails,
 		WorkerUpdate: time.Now(),
+		Status:       true,
 	}
 
 	err := su.repo.Update(ctx, model)
@@ -48,7 +49,7 @@ func (su *ServiceUpdate) Update(ctx context.Context, request request.UpdateReque
 			Status:  response.StatusInternalServerError,
 			Message: "Failed to Update",
 			Data:    nil,
-		}, errors.New("Failed to Update")
+		}, errors.New("data not found")
 	}
 	return response.BodyResponse{
 		Status:  response.StatusOK,

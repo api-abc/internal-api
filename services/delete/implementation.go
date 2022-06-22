@@ -33,7 +33,7 @@ func (sd *ServiceDelete) Delete(ctx context.Context, name string) (response.Body
 			Status:  response.StatusBadRequest,
 			Message: "Failed to Delete",
 			Data:    nil,
-		}, errors.New("Failed to Delete")
+		}, errors.New("failed to delete")
 	}
 	return response.BodyResponse{
 		Status:  response.StatusOK,

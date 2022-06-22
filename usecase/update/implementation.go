@@ -42,7 +42,7 @@ func (upd *DataUsecaseUpdate) HandleUpdate(writer http.ResponseWriter, req *http
 	resp, err := upd.service.Update(ctx, request, name)
 	if err != nil {
 		switch err.Error() {
-		case "Data not found":
+		case "data not found":
 			helper.WriteOutput(writer, 404, helper.WriteStatusError(err, response.StatusNotFound))
 		default:
 			helper.WriteOutput(writer, 400, helper.WriteStatusError(err, response.StatusBadRequest))
