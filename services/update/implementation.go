@@ -49,7 +49,7 @@ func (su *ServiceUpdate) Update(ctx context.Context, request request.UpdateReque
 			Status:  response.StatusInternalServerError,
 			Message: "Failed to Update",
 			Data:    nil,
-		}, errors.New("data not found")
+		}, errors.New("failed to update")
 	}
 	return response.BodyResponse{
 		Status:  response.StatusOK,
