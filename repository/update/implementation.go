@@ -38,7 +38,7 @@ func (repo *DataUpdateRepo) Update(ctx context.Context, data domain.Data) error 
 
 func (repo *DataUpdateRepo) GetUpdated(ctx context.Context) []*domain.Data {
 	var dats []*domain.Data
-	query := "SELECT name, age, status, job_details, worker_update FROM data WHERE worker_update = current_timestamp"
+	query := "SELECT * FROM data WHERE worker_update::timestamp(0) without time zone = now()::timestamp(0) without time zone"
 	rows, err := repo.database.QueryContext(ctx, query)
 	helper.HandlePanic(err)
 	defer rows.Close()
