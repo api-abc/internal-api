@@ -38,7 +38,7 @@ func (repo *DataUpdateRepo) Update(ctx context.Context, data domain.Data) error 
 
 func (repo *DataUpdateRepo) GetUpdated(ctx context.Context) []*domain.Data {
 	var dats []*domain.Data
-	query := "SELECT * FROM data WHERE worker_update::timestamp(0) without time zone = now()::timestamp(0) without time zone"
+	query := "SELECT * FROM data WHERE worker_update::timestamp(0) without time zone > now()::timestamp(0) without time zone - interval '1 second' AND worker_update::timestamp(0) without time zone <= now()::timestamp(0) without time zone + interval '1 second'"
 	rows, err := repo.database.QueryContext(ctx, query)
 	helper.HandlePanic(err)
 	defer rows.Close()
