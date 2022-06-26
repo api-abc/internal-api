@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
+	"fmt"
 
 	"github.com/api-abc/internal-api/helper"
 	"github.com/api-abc/internal-api/model/domain"
@@ -21,14 +22,15 @@ func NewDataUpdateRepo(db *sql.DB) IDataUpdate {
 }
 
 func (repo *DataUpdateRepo) Update(ctx context.Context, data domain.Data) error {
-	query := "UPDATE data SET age=$1, job_details=$2, worker_update=$3 WHERE name=$4 AND status = true"
+	query := "UPDATE data SET age=$1, job_details=$2 WHERE name=$3 AND status = true"
 	marsh, err := json.Marshal(&data.JobDetails)
 	helper.HandlePanic(err)
 
-	result, err := repo.database.ExecContext(ctx, query, data.Age, marsh, data.WorkerUpdate, data.Name)
+	result, err := repo.database.ExecContext(ctx, query, data.Age, marsh, data.Name)
 	helper.HandlePanic(err)
 
 	rowsAffected, err := result.RowsAffected()
+	fmt.Println("Update Row ", rowsAffected, data.Name)
 	helper.HandlePanic(err)
 	if rowsAffected > 0 {
 		return nil
@@ -38,7 +40,7 @@ func (repo *DataUpdateRepo) Update(ctx context.Context, data domain.Data) error 
 
 func (repo *DataUpdateRepo) GetUpdated(ctx context.Context) []*domain.Data {
 	var dats []*domain.Data
-	query := "SELECT * FROM data WHERE worker_update::timestamp(0) without time zone > now()::timestamp(0) without time zone - interval '1 second' AND worker_update::timestamp(0) without time zone <= now()::timestamp(0) without time zone + interval '1 second'"
+	query := "SELECT name, age, status, job_details, worker_update FROM data WHERE worker_update between (CURRENT_TIMESTAMP - interval '1 second') and (CURRENT_TIMESTAMP + interval '1 second') LIMIT 10"
 	rows, err := repo.database.QueryContext(ctx, query)
 	helper.HandlePanic(err)
 	defer rows.Close()

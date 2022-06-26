@@ -3,7 +3,6 @@ package update
 import (
 	"context"
 	"errors"
-	"time"
 
 	"github.com/api-abc/internal-api/model/domain"
 	"github.com/api-abc/internal-api/model/request"
@@ -36,11 +35,10 @@ func (su *ServiceUpdate) Update(ctx context.Context, request request.UpdateReque
 	}
 
 	model := domain.Data{
-		Name:         name,
-		Age:          request.Age,
-		JobDetails:   request.JobDetails,
-		WorkerUpdate: time.Now(),
-		Status:       true,
+		Name:       name,
+		Age:        request.Age,
+		JobDetails: request.JobDetails,
+		Status:     true,
 	}
 
 	err := su.repo.Update(ctx, model)

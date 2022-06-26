@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"fmt"
 
 	"github.com/api-abc/internal-api/helper"
 	"github.com/api-abc/internal-api/model/domain"
@@ -23,8 +24,14 @@ func (repo *DataInsertRepo) Insert(ctx context.Context, data domain.Data) error 
 	query := "INSERT INTO data(name, age, status, job_details, worker_update) VALUES($1,$2,$3,$4,$5)"
 	marsh, err := json.Marshal(&data.JobDetails)
 	helper.HandlePanic(err)
-	_, err = repo.database.ExecContext(ctx, query, data.Name, data.Age, data.Status, marsh, data.WorkerUpdate)
+	result, err := repo.database.ExecContext(ctx, query, data.Name, data.Age, data.Status, marsh, data.WorkerUpdate)
 	helper.HandlePanic(err)
+	rowsAffected, err := result.RowsAffected()
+	fmt.Println("Insert Row ", rowsAffected, data.Name)
+	helper.HandlePanic(err)
+	if rowsAffected > 0 {
+		return nil
+	}
 	return nil
 }
 
